@@ -49,6 +49,7 @@ joined_df %>%
   theme(legend.position = 'none') +
   scale_fill_brewer(palette="Set1")
 
+# Filter
 joined_df <- joined_df %>% 
   filter(!is.na(source_bucket))
 
@@ -68,6 +69,7 @@ joined_df %>%
   theme(legend.position = 'none') +
   scale_fill_brewer(palette="Set1")
 
+# Filter
 joined_df <- joined_df %>% 
   filter(opportunity_type == 'New')
 
@@ -94,6 +96,7 @@ joined_df %>%
   ) +
   scale_fill_brewer(palette="Set1")
 
+# Create target
 joined_df <- joined_df %>% 
   mutate(
     closed_won = ifelse(opportunity_stage_name == '7. Closed Won', 1, 0)
@@ -138,11 +141,12 @@ joined_df %>%
   theme(legend.position = 'none') +
   scale_fill_brewer(palette="Set1")
 
+# Both
 plot(table(joined_df$commission_model, joined_df$revenue_contract_type))
 
+# Filter
 joined_df <- joined_df %>% 
   filter(commission_model == 'CRA')
-
 
 
 # Look at target ----------------------------------------------------------
@@ -279,17 +283,11 @@ joined_df %>%
   theme_minimal()
 
 
+# Focus below 5e7
 joined_df %>% 
   filter(annual_revenue_db < 5e7) %>% 
   ggplot(aes(x = annual_revenue_db)) +
   geom_histogram()
-
-
-joined_df %>% 
-  filter(annual_revenue_db < 5e8) %>% 
-  count(annual_revenue_db) %>% 
-  arrange(desc(n)) %>% 
-  head()
 
 
 # Max
@@ -326,14 +324,6 @@ joined_df %>%
     n = n()
   ) %>% 
   mutate(n = n / sum(n))
-
-
-
-# LM
-m1 <- glm(closed_won ~ annual_revenue_db, 
-              data = joined_df[!is.na(joined_df$annual_revenue_db),], 
-             family = binomial)
-summary(m1)$coef
 
 
 
